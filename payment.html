@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Оплата заказа</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #34495E;
+            --accent-color: #5D6D7E;
+            --bg-color: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --text-main: #2D3436;
+            --input-border: #DCDDE1;
+            --btn-hover: #2C3E50;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "Montserrat", sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.6;
+        }
+
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 16px;
+            border-radius: 50px;
+            display: flex;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .lang-btn { opacity: 0.4; transition: 0.3s; color: var(--text-main); }
+        .lang-btn.active { opacity: 1; color: var(--primary-color); border-bottom: 2px solid var(--primary-color); }
+
+        .pay-container {
+            width: 92%;
+            max-width: 480px;
+            background: var(--card-bg);
+            padding: 40px 30px;
+            margin-top: 80px;
+            margin-bottom: 40px;
+            border-radius: 32px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.07);
+            text-align: center;
+        }
+
+        h1 {
+            font-family: "Cormorant Garamond", serif;
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .products-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .product-option {
+            position: relative;
+            background: #FFFFFF;
+            border: 1.5px solid var(--input-border);
+            border-radius: 16px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-option:hover { border-color: var(--accent-color); }
+        .product-option.selected {
+            border-color: var(--primary-color);
+            background: #F4F7F9;
+            transform: translateY(-2px);
+        }
+
+        .prod-name { font-weight: 600; font-size: 15px; color: var(--primary-color); }
+        .prod-price { font-family: "Cormorant Garamond", serif; font-size: 20px; color: var(--text-main); font-weight: 600; }
+
+        .bank-card {
+            background: linear-gradient(135deg, #2C3E50 0%, #4B79A1 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: left;
+            margin-bottom: 30px;
+            position: relative;
+            box-shadow: 0 12px 25px rgba(44, 62, 80, 0.2);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .bank-card:active { transform: scale(0.97); }
+
+        .card-label { font-size: 11px; text-transform: uppercase; opacity: 0.8; letter-spacing: 1.5px; }
+        .card-number {
+            font-family: "Montserrat", monospace;
+            font-size: 21px;
+            margin: 18px 0;
+            letter-spacing: 2px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .copy-icon { width: 18px; height: 18px; opacity: 0.9; }
+        
+        .card-footer { display: flex; justify-content: space-between; align-items: flex-end; }
+        .card-amount-label { font-size: 10px; opacity: 0.8; display: block; text-transform: uppercase; }
+        .card-amount-val { font-size: 19px; font-weight: 600; }
+
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-label { display: block; font-size: 13px; margin-bottom: 8px; font-weight: 600; color: var(--accent-color); }
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            border: 1.5px solid var(--input-border);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .form-input:focus { border-color: var(--primary-color); }
+
+        .btn-pay {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            padding: 18px;
+            border-radius: 14px;
+            border: none;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(52, 73, 94, 0.15);
+        }
+        .btn-pay:hover { background: var(--btn-hover); transform: translateY(-1px); }
+
+        /* ИНФО-БЛОК ПРО ТЕЛЕГРАМ */
+        .tg-info {
+            background: #F0F4F8;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #546E7A;
+            line-height: 1.5;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px; left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 100;
+        }
+        .toast.show { opacity: 1; }
+
+        .lang-uz { display: none; }
+        body.uz-mode .lang-ru { display: none; }
+        body.uz-mode .lang-uz { display: block; }
+        body.uz-mode span.lang-uz { display: inline !important; }
+        body.uz-mode span.lang-ru { display: none !important; }
+
+        @media (max-width: 400px) {
+            .pay-container { padding: 30px 20px; }
+            .card-number { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast" class="toast">Скопировано!</div>
+
+    <div class="lang-switcher">
+        <span class="lang-btn active" id="btn-ru" onclick="setLang('ru')">RU</span>
+        <span class="lang-btn" id="btn-uz" onclick="setLang('uz')">UZ</span>
+    </div>
+
+    <div class="pay-container">
+        
+        <h1 class="lang-ru">Оплата заказа</h1>
+        <h1 class="lang-uz">To'lov sahifasi</h1>
+
+        <div class="products-grid">
+            <div class="product-option selected" onclick="selectProduct(0)">
+                <div>
+                    <span class="prod-name lang-ru">Марафон благодарности</span>
+                    <span class="prod-name lang-uz">Minnatdorchilik Marafoni</span>
+                </div>
+                <div class="prod-price">1 000 000 UZS</div>
+            </div>
+
+            <div class="product-option" onclick="selectProduct(1)">
+                <div>
+                    <span class="prod-name lang-ru">Карта желаний</span>
+                    <span class="prod-name lang-uz">Orzular Xaritasi</span>
+                </div>
+                <div class="prod-price">790 000 UZS</div>
+            </div>
+        </div>
+
+        <p class="lang-ru" style="font-size:13px; color:#7F8C8D; margin-bottom:15px;">Нажмите на карту, чтобы скопировать номер:</p>
+        <p class="lang-uz" style="font-size:13px; color:#7F8C8D; margin-bottom:15px;">Nusxalash uchun kartani bosing:</p>
+
+        <div class="bank-card" onclick="copyCard()">
+            <div class="card-label">UZCARD / HUMO</div>
+            <div class="card-number">
+                <span>8600 5304 2727 8760</span>
+                <svg class="copy-icon" fill="white" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            </div>
+            <div class="card-footer">
+                <div class="card-name">VEFA GEYUSHOVA</div>
+                <div>
+                    <span class="card-amount-label lang-ru">К оплате:</span>
+                    <span class="card-amount-label lang-uz">To'lov summasi:</span>
+                    <div class="card-amount-val" id="display-price">1 000 000 UZS</div>
+                </div>
+            </div>
+        </div>
+
+        <form onsubmit="sendToTelegram(event)" style="margin-top: 30px;">
+            <div class="form-group">
+                <label class="form-label lang-ru">Ваше имя</label>
+                <label class="form-label lang-uz">Ismingiz</label>
+                <input type="text" id="name" class="form-input" placeholder="Иван Иванов" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label lang-ru">Телефон / Telegram</label>
+                <label class="form-label lang-uz">Telefon / Telegram</label>
+                <input type="tel" id="phone" class="form-input" placeholder="+998..." required>
+            </div>
+
+            <button type="submit" class="btn-pay">
+                <span class="lang-ru">Перейти в бот</span>
+                <span class="lang-uz">Botga o'tish</span>
+            </button>
+            
+            <div class="tg-info">
+                <span class="lang-ru"><b>Важно:</b> Вас перенаправит в Telegram. Пожалуйста, <b>отправьте туда скриншот чека</b> для подтверждения оплаты.</span>
+                <span class="lang-uz"><b>Muhim:</b> Siz Telegramga yo'naltirilasiz. To'lovni tasdiqlash uchun u yerga <b>chek skrinshotini yuboring</b>.</span>
+            </div>
+        </form>
+
+        <a href="index.html" style="display:inline-block; margin-top:25px; font-size:13px; color:var(--accent-color); text-decoration:none; border-bottom: 1px solid #eee;">
+            <span class="lang-ru">Вернуться назад</span>
+            <span class="lang-uz">Ortga qaytish</span>
+        </a>
+    </div>
+
+    <script>
+        const products = [
+            { price: "1 000 000 UZS", nameRu: "Марафон «На крыльях»", nameUz: "«Qanotlarda» marafoni" },
+            { price: "790 000 UZS", nameRu: "Карта желаний", nameUz: "Orzular Xaritasi" }
+        ];
+
+        let selectedIndex = 0;
+
+        function selectProduct(index) {
+            selectedIndex = index;
+            const options = document.querySelectorAll('.product-option');
+            options.forEach((opt, i) => {
+                opt.classList.toggle('selected', i === index);
+            });
+            document.getElementById('display-price').innerText = products[index].price;
+        }
+
+        function copyCard() {
+            const num = "8600530427278760";
+            navigator.clipboard.writeText(num).then(() => {
+                const toast = document.getElementById('toast');
+                const isUz = document.body.classList.contains('uz-mode');
+                toast.innerText = isUz ? "Nusxalandi!" : "Номер скопирован!";
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        }
+
+        function setLang(lang) {
+            const body = document.body;
+            const btnRu = document.getElementById('btn-ru');
+            const btnUz = document.getElementById('btn-uz');
+            
+            if (lang === 'uz') {
+                body.classList.add('uz-mode');
+                btnUz.classList.add('active');
+                btnRu.classList.remove('active');
+            } else {
+                body.classList.remove('uz-mode');
+                btnRu.classList.add('active');
+                btnUz.classList.remove('active');
+            }
+        }
+
+        function sendToTelegram(e) {
+            e.preventDefault();
+            const botLink = "https://t.me/onwings_pay_bot"; 
+            window.location.href = botLink;
+        }
+    </script>
+</body>
+</html>
