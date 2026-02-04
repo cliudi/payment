@@ -158,7 +158,6 @@
         }
         .btn-pay:hover { background: var(--btn-hover); transform: translateY(-1px); }
 
-        /* ИНФО-БЛОК ПРО ТЕЛЕГРАМ */
         .tg-info {
             background: #F0F4F8;
             padding: 15px;
@@ -188,8 +187,6 @@
         .lang-uz { display: none; }
         body.uz-mode .lang-ru { display: none; }
         body.uz-mode .lang-uz { display: block; }
-        body.uz-mode span.lang-uz { display: inline !important; }
-        body.uz-mode span.lang-ru { display: none !important; }
 
         @media (max-width: 400px) {
             .pay-container { padding: 30px 20px; }
@@ -214,7 +211,7 @@
         <div class="products-grid">
             <div class="product-option selected" onclick="selectProduct(0)">
                 <div>
-                    <span class="prod-name lang-ru">Марафон благодарности</span>
+                    <span class="prod-name lang-ru">Марафон Благодарности</span>
                     <span class="prod-name lang-uz">Minnatdorchilik Marafoni</span>
                 </div>
                 <div class="prod-price">1 000 000 UZS</div>
@@ -310,15 +307,18 @@
             const body = document.body;
             const btnRu = document.getElementById('btn-ru');
             const btnUz = document.getElementById('btn-uz');
+            const nameInput = document.getElementById('name');
             
             if (lang === 'uz') {
                 body.classList.add('uz-mode');
                 btnUz.classList.add('active');
                 btnRu.classList.remove('active');
+                nameInput.placeholder = "Aziz Rakhimov"; // Перевод плейсхолдера
             } else {
                 body.classList.remove('uz-mode');
                 btnRu.classList.add('active');
                 btnUz.classList.remove('active');
+                nameInput.placeholder = "Иван Иванов"; // Возврат на русский
             }
         }
 
