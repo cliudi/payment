@@ -269,64 +269,86 @@
             </div>
         </form>
 
-        <a href="index.html" style="display:inline-block; margin-top:25px; font-size:13px; color:var(--accent-color); text-decoration:none; border-bottom: 1px solid #eee;">
-            <span class="lang-ru">Вернуться назад</span>
-            <span class="lang-uz">Ortga qaytish</span>
-        </a>
+<a href="https://cliudi.github.io/gratitude/" id="back-link" style="display:inline-block; margin-top:25px; font-size:13px; color:var(--accent-color); text-decoration:none; border-bottom: 1px solid #eee;">
+    <span class="lang-ru">Вернуться к Марафону Благодарности</span>
+    <span class="lang-uz">Minnatdorchilik Marafoniga qaytish</span>
+</a>
     </div>
 
     <script>
-        const products = [
-            { price: "1 000 000 UZS", nameRu: "Марафон «На крыльях»", nameUz: "«Qanotlarda» marafoni" },
-            { price: "790 000 UZS", nameRu: "Карта желаний", nameUz: "Orzular Xaritasi" }
-        ];
-
-        let selectedIndex = 0;
-
-        function selectProduct(index) {
-            selectedIndex = index;
-            const options = document.querySelectorAll('.product-option');
-            options.forEach((opt, i) => {
-                opt.classList.toggle('selected', i === index);
-            });
-            document.getElementById('display-price').innerText = products[index].price;
+    const products = [
+        { 
+            price: "1 000 000 UZS", 
+            nameRu: "Вернуться к Марафону Благодарности", 
+            nameUz: "Minnatdorchilik Marafoniga qaytish",
+            url: "https://cliudi.github.io/gratitude/"
+        },
+        { 
+            price: "790 000 UZS", 
+            nameRu: "Вернуться к Карте желаний", 
+            nameUz: "Orzular Xaritasiga qaytish",
+            url: "https://cliudi.github.io/mapofwishes/"
         }
+    ];
 
-        function copyCard() {
-            const num = "8600530427278760";
-            navigator.clipboard.writeText(num).then(() => {
-                const toast = document.getElementById('toast');
-                const isUz = document.body.classList.contains('uz-mode');
-                toast.innerText = isUz ? "Nusxalandi!" : "Номер скопирован!";
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 2000);
-            });
-        }
+    let selectedIndex = 0;
 
-        function setLang(lang) {
-            const body = document.body;
-            const btnRu = document.getElementById('btn-ru');
-            const btnUz = document.getElementById('btn-uz');
-            const nameInput = document.getElementById('name');
-            
-            if (lang === 'uz') {
-                body.classList.add('uz-mode');
-                btnUz.classList.add('active');
-                btnRu.classList.remove('active');
-                nameInput.placeholder = "Aziz Rakhimov"; // Перевод плейсхолдера
-            } else {
-                body.classList.remove('uz-mode');
-                btnRu.classList.add('active');
-                btnUz.classList.remove('active');
-                nameInput.placeholder = "Иван Иванов"; // Возврат на русский
-            }
-        }
+    function selectProduct(index) {
+        selectedIndex = index;
+        
+        // Подсветка выбранной плитки
+        const options = document.querySelectorAll('.product-option');
+        options.forEach((opt, i) => {
+            opt.classList.toggle('selected', i === index);
+        });
 
-        function sendToTelegram(e) {
-            e.preventDefault();
-            const botLink = "https://t.me/onwings_pay_bot"; 
-            window.location.href = botLink;
+        // Обновление цены на карте
+        document.getElementById('display-price').innerText = products[index].price;
+
+        // Обновление ссылки "Вернуться"
+        const backLink = document.getElementById('back-link');
+        backLink.href = products[index].url;
+        
+        // Обновление текста внутри ссылки для обоих языков
+        backLink.querySelector('.lang-ru').innerText = products[index].nameRu;
+        backLink.querySelector('.lang-uz').innerText = products[index].nameUz;
+    }
+
+    function copyCard() {
+        const num = "8600530427278760";
+        navigator.clipboard.writeText(num).then(() => {
+            const toast = document.getElementById('toast');
+            const isUz = document.body.classList.contains('uz-mode');
+            toast.innerText = isUz ? "Nusxalandi!" : "Номер скопирован!";
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        });
+    }
+
+    function setLang(lang) {
+        const body = document.body;
+        const btnRu = document.getElementById('btn-ru');
+        const btnUz = document.getElementById('btn-uz');
+        const nameInput = document.getElementById('name');
+        
+        if (lang === 'uz') {
+            body.classList.add('uz-mode');
+            btnUz.classList.add('active');
+            btnRu.classList.remove('active');
+            nameInput.placeholder = "Aziz Rakhimov";
+        } else {
+            body.classList.remove('uz-mode');
+            btnRu.classList.add('active');
+            btnUz.classList.remove('active');
+            nameInput.placeholder = "Иван Иванов";
         }
-    </script>
+    }
+
+    function sendToTelegram(e) {
+        e.preventDefault();
+        const botLink = "https://t.me/onwings_pay_bot"; 
+        window.location.href = botLink;
+    }
+</script>
 </body>
 </html>
